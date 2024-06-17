@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +18,8 @@ import com.rest.webservice.restful_web_services.dao.UserDaoSevice;
 import com.rest.webservice.restful_web_services.entity.HelloWorldBean;
 import com.rest.webservice.restful_web_services.entity.Users;
 import com.rest.webservice.restful_web_services.exceptions.UserNotFoundException;
+
+import jakarta.validation.Valid;
 
 @RestController
 public class Controller {
@@ -48,7 +51,7 @@ public class Controller {
 	}
 
 	@PostMapping("users")
-	public ResponseEntity<Users> CreateUser(@RequestBody Users user) throws URISyntaxException {
+	public ResponseEntity<Users> CreateUser(@Valid @RequestBody Users user) throws URISyntaxException {
 		Users savedUser = userDaoSevice.saveUsers(user);
 
 		// Build the location URI for the newly created user
@@ -67,10 +70,14 @@ public class Controller {
 		}
 		return user;
 	}
-////	@DeleteMapping("users/{id}")
-////	public Users allUsers(@PathVariable int id) {
-////		return new Users();
-////	}
+	@DeleteMapping("users/{id}")
+	public Users DeleteUser(@PathVariable int id) {
+		Users user = userDaoSevice.deleteById(id);
+		if(user == null) {
+			throw new UserNotFoundException("id:"+ id);
+		}
+		return user;
+	}
 ////	@GetMapping("users/{id}/posts")
 ////	public Users allUsers(@PathVariable int id) {
 ////		return new Users();

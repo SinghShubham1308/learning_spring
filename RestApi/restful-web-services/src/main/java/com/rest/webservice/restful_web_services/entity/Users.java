@@ -2,9 +2,14 @@ package com.rest.webservice.restful_web_services.entity;
 
 import java.time.LocalDate;
 
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Size;
+
 public class Users {
 	private int id;
+	@Size(min = 2, message = "name should have atleast 2 character")
 	private String name;
+	@Past(message = "birth date should be in past")
 	private LocalDate birthDate;
 
 	public int getId() {
