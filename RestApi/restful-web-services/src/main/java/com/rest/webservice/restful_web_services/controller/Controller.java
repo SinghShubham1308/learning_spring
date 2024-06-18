@@ -3,8 +3,11 @@ package com.rest.webservice.restful_web_services.controller;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +28,7 @@ import jakarta.validation.Valid;
 public class Controller {
 	@Autowired
 	private UserDaoSevice userDaoSevice;
-
+	private MessageSource messageSource;
 //	public Controller(UserDaoSevice userDaoSevice) {
 //		super();
 //		this.userDaoSevice = userDaoSevice;
@@ -89,5 +92,16 @@ public class Controller {
 //
 //	
 //	@GetMapping("users/{id}/posts/{post_id}") 
+	@GetMapping("helloInternational")
+	public String helloWorldInternationalized() {
+		Locale locale = LocaleContextHolder.getLocale();
+		return messageSource.getMessage("good.morning.message", null, "default Message", locale );
+//		return "Hello Welcome to rest api";
+	}
+
+	public Controller(MessageSource messageSource) {
+		super();
+		this.messageSource = messageSource;
+	}
 
 }
