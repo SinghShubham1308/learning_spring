@@ -1,5 +1,7 @@
 package com.rest.webservice.restful_web_services.controller;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -8,6 +10,8 @@ import java.util.Locale;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +33,7 @@ public class Controller {
 	@Autowired
 	private UserDaoSevice userDaoSevice;
 	private MessageSource messageSource;
+
 //	public Controller(UserDaoSevice userDaoSevice) {
 //		super();
 //		this.userDaoSevice = userDaoSevice;
@@ -65,22 +70,31 @@ public class Controller {
 		return ResponseEntity.created(location).body(savedUser);
 	}
 
+// localhost:8080/users/1
+//	EntityModel
+//	WebMvcLinkBuilder
 	@GetMapping("users/{id}")
-	public Users allUsers(@PathVariable int id) {
+	public EntityModel<Users> searchUsersById(@PathVariable int id) {
 		Users user = userDaoSevice.findById(id);
-		if(user == null) {
-			throw new UserNotFoundException("id:"+ id);
+		if (user == null) {
+			throw new UserNotFoundException("id:" + id);
 		}
-		return user;
+		EntityModel<Users> entityModel = EntityModel.of(user);
+		WebMvcLinkBuilder linkBuilder = linkTo(methodOn(getClass()).allUsers());  
+		entityModel.add(linkBuilder.withRel("all-users"));
+		return entityModel;
+
 	}
+
 	@DeleteMapping("users/{id}")
 	public Users DeleteUser(@PathVariable int id) {
 		Users user = userDaoSevice.deleteById(id);
-		if(user == null) {
-			throw new UserNotFoundException("id:"+ id);
+		if (user == null) {
+			throw new UserNotFoundException("id:" + id);
 		}
 		return user;
 	}
+
 ////	@GetMapping("users/{id}/posts")
 ////	public Users allUsers(@PathVariable int id) {
 ////		return new Users();
@@ -95,7 +109,7 @@ public class Controller {
 	@GetMapping("helloInternational")
 	public String helloWorldInternationalized() {
 		Locale locale = LocaleContextHolder.getLocale();
-		return messageSource.getMessage("good.morning.message", null, "default Message", locale );
+		return messageSource.getMessage("good.morning.message", null, "default Message", locale);
 //		return "Hello Welcome to rest api";
 	}
 
