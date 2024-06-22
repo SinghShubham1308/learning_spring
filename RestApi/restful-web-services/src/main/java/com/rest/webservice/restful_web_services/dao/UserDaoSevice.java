@@ -8,17 +8,19 @@ import java.util.function.Predicate;
 
 import org.springframework.stereotype.Component;
 
+import com.rest.webservice.restful_web_services.entity.Post;
 import com.rest.webservice.restful_web_services.entity.Users;
 
 @Component
 public class UserDaoSevice {
 	private static List<Users> users = new ArrayList<Users>();
+	private static List<Post> posts = new ArrayList<Post>();
 	private static int countUser = 0;
-	static {
-		users.add(new Users(++countUser, "Shubham", LocalDate.now().minusYears(30)));
-		users.add(new Users(++countUser, "Ritik", LocalDate.now().minusYears(35)));
-		users.add(new Users(++countUser, "Abhishek", LocalDate.now().minusYears(25)));
-	}
+//	static {
+//		users.add(new Users(++countUser, "Shubham", LocalDate.now().minusYears(30)));
+//		users.add(new Users(++countUser, "Ritik", LocalDate.now().minusYears(35)));
+//		users.add(new Users(++countUser, "Abhishek", LocalDate.now().minusYears(25)));
+//	}
 
 	public List<Users> findAll() {
 		return users;
@@ -45,4 +47,6 @@ public class UserDaoSevice {
 		users.add(user);
 		return user;
 	}
+	
+
 }
