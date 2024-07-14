@@ -28,6 +28,7 @@ import com.rest.webservice.restful_web_services.dao.UserServiceImplementation;
 import com.rest.webservice.restful_web_services.entity.HelloWorldBean;
 import com.rest.webservice.restful_web_services.entity.Post;
 import com.rest.webservice.restful_web_services.entity.Users;
+import com.rest.webservice.restful_web_services.exceptions.PostNotFoundException;
 import com.rest.webservice.restful_web_services.exceptions.UserNotFoundException;
 
 import jakarta.validation.Valid;
@@ -127,6 +128,19 @@ public class JpaUserController {
             throw new UserNotFoundException("id:" + id);
         }
         userServiceImplementation.deleteById(id);
+        return user.get();
+    }
+    @DeleteMapping("/users/{user_id}/posts/post_id")
+    public Users deleteUsersPost(@PathVariable int user_id,@RequestBody int post_id) {
+        Optional<Users> user = userServiceImplementation.findById(user_id);
+        Optional<Post> post = postServiceImplementation.findById(post_id);
+        if (user.isEmpty()) {
+            throw new UserNotFoundException("id:" + user_id);
+        }
+        if (post.isEmpty() || post.get().getUsers().getId() != user_id) {
+            throw new PostNotFoundException("Post ID: " + post_id + " for User ID: " + user_id);
+        }
+        postServiceImplementation.delete(post.get());
         return user.get();
     }
 
